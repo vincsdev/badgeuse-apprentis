@@ -1,22 +1,38 @@
+# Badgeuse apprentis
 
+## Getting started
 
-Installation
+### Installing
+```
+# python3 setup.py install
+```
 
-sudo python3 setup.py install
+Reload to discover new daemons
+```
+# systemctl daemon-reload
+```
 
-sudo systemctl daemon-reload
+Enable start-up at boot
+```
+# systemctl enable badgeuse-apprentis.service
+```
 
-# Lancement du service au démarrage de la machine
-sudo systemctl enable badgeuse-apprentis.service
+To start the service
+```
+# systemctl start badgeuse-apprentis.service
+```
 
-# Lancement du service
-sudo systemctl start badgeuse-apprentis.service
+To stop the service
+```
+# systemctl stop badgeuse-apprentis.service
+```
 
-# Arret du service
-sudo systemctl stop badgeuse-apprentis.service
+Information about service state
+```
+# systemctl status badgeuse-apprentis.service
+```
 
-# Information de l'état du service
-sudo systemctl status badgeuse-apprentis.service
-
-# Log relatifs au service
-sudo journalctl -f -u badgeuse-apprentis.service
+Log from service
+```
+# journalctl -f -u badgeuse-apprentis.service
+```
