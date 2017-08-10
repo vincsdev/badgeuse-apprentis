@@ -1,0 +1,59 @@
+### Fichier de configuration du logiciel badgeuse-apprentis ###
+
+[LOG]
+# Définition du niveau de verbosité (10:debug, 20:info, 30:warning, 40:error, 50:critical).
+LOG_LEVEL = 10
+
+
+[DIRECTORY]
+# Définition de l'emplacement de stockage des fichiers CSV générés.
+DATA_DIRECTORY = /tmp/badgeuse-apprentis/
+
+# Définition de l'emplacement des fichiers de logs.
+LOG_DIRECTORY = /var/log/
+
+
+[FONCTIONNEMENT]
+# Définition de l'heure de début de la période de pointage.
+HEURE_DEBUT = 07:00:00
+
+# Définition de l'heure de fin de la période de pointage
+# et de l'heure d'envoi du compte rendu des passages.
+HEURE_COLLECTE = 20:00:00
+
+# Définition du jour de fin de semaine (0:lundi, 1:mardi, 2:mercredi, 3:jeudi, 4:vendredi, 5:samedi, 6:dimanche).
+FIN_SEMAINE = 4
+
+# Définition de la durée de la temporisation entre chaque jour (en h).
+TEMPORISATION_ENTRE_JOUR = 10
+
+# Définition de la durée de la temporisation entre chaque semaine (en h).
+TEMPORISATION_ENTRE_SEMAINE = 58
+
+
+[SMTP]
+# Configuration des données d'identification au serveur SMTP.
+SMTP_UTILISATEUR = <utilisateur>
+SMTP_MOTDEPASSE = <mdp>
+SMTP_URL = <serveur smtp>
+SMTP_PORT = <port>
+
+
+[MAIL]
+# Configuration du mail quotidien à envoyer.
+MAIL_QUOTIDIEN_DESTINATAIRE = <destinataires>
+MAIL_QUOTIDIEN_OBJET = Liste des passages du {0}
+MAIL_QUOTIDIEN_MESSAGE = Bonjour,<br /><br />
+                         Veuillez recevoir la liste des passages
+                         effectués durant la journée du <b>{0}</b>.<br /><br />
+                         Cordialement<br /><br />
+                         La badgeuse
+
+# Configuration du mail hebdomadaire à envoyer.
+MAIL_HEBDOMADAIRE_DESTINATAIRE = <destinataires>
+MAIL_HEBDOMADAIRE_OBJET = Liste des passages de la semaine {0}
+MAIL_HEBDOMADAIRE_MESSAGE = Bonjour,<br /><br />
+                            Veuillez recevoir la liste des passages
+                            effectués durant la semaine <b>{0}</b>.<br /><br />
+                            Cordialement<br /><br />
+                            La badgeuse
