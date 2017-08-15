@@ -183,7 +183,7 @@ def main():
                     except:
                         logging.error("Lecteur toujours actif")
                 # Attente du vendredi à 20h au lundi à 6h (2 jours + 10h)
-                time.sleep(config.getfloat('FONCTIONNEMENT', 'TEMPORISATION_ENTRE_SEMAINE'))
+                time.sleep(config.getfloat('FONCTIONNEMENT', 'TEMPORISATION_ENTRE_SEMAINE') * 60 * 60)
 
             else:
                 # Arret du lecteur de badge
@@ -196,7 +196,7 @@ def main():
                     except:
                         logging.error("Lecteur toujours actif")
                  # Attente du lendemain matin
-                time.sleep(config.getfloat('FONCTIONNEMENT', 'TEMPORISATION_ENTRE_JOUR'))
+                time.sleep(config.getfloat('FONCTIONNEMENT', 'TEMPORISATION_ENTRE_JOUR') * 60 * 60)
 
         else:
             time.sleep(1)
