@@ -73,7 +73,7 @@ def main():
     # Configuration des horaires
     _heureDebut = datetime.datetime.strptime(config['FONCTIONNEMENT']['HEURE_DEBUT'], '%H:%M:%S').time()
     _heureCollecte = datetime.datetime.strptime(config['FONCTIONNEMENT']['HEURE_COLLECTE'], '%H:%M:%S').time()
-    _finSemaine = config['FONCTIONNEMENT']['FIN_SEMAINE']
+    _finSemaine = config.getint('FONCTIONNEMENT', 'FIN_SEMAINE')
 
     _lecteurEstActif = False
 
@@ -167,7 +167,7 @@ def main():
                                   .format(datetime.datetime.now()
                                   .isocalendar()[1]),
                                   config['MAIL']['MAIL_HEBDOMADAIRE_MESSAGE']
-                                  .format(datetime.datetime.now()
+                                  .format(datetime.datetime.now() \
                                   .isocalendar()[1]))
                     mail.AjouterPiecesJointes([nomFichierCSVsemaine])
                     mail.Envoyer()
