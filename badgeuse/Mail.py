@@ -30,6 +30,7 @@ class Mail:
         self._message.attach(MIMEText(texte, 'html'))  # ou 'plain'
 
     def AjouterPiecesJointes(self, listePJ):
+        retour = True
         # Ajout des pièces jointes
         for file in listePJ:
             try:
@@ -43,6 +44,8 @@ class Mail:
             except:
                 logging.error("Impossible d'ouvrir les pièces jointes.'. Erreur: ",
                                sys.exc_info()[0])
+                retour = False
+        return retour
 
     def Envoyer(self):
         # Envoi de l'email'
@@ -55,9 +58,11 @@ class Mail:
                 s.sendmail(self._expediteur, self._destinataires,
                            self._message.as_string())
                 s.close()
-            loging.info("Email envoyé!")
+            logging.info("Email envoyé!")
+            return True
         except:
             logging.error("Impossible d'envoyer le mail'. Erreur: ", sys.exc_info()[0])
+            return False
 
 
 if __name__ == '__main__':

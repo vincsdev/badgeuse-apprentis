@@ -115,9 +115,9 @@ def main():
                                            config['SMTP']['SMTP_PORT'])
                 mail.Preparer(config['MAIL']['MAIL_QUOTIDIEN_DESTINATAIRE'].split(','),
                               config['MAIL']['MAIL_QUOTIDIEN_OBJET']
-                              .format(datetime.datetime.now().strftime('%d/%m/%Y')),
+                              .format(date = datetime.datetime.now().strftime('%d/%m/%Y')),
                               config['MAIL']['MAIL_QUOTIDIEN_MESSAGE']
-                              .format(datetime.datetime.now() \
+                              .format(date = datetime.datetime.now() \
                               .strftime('%d/%m/%Y')))
                 mail.AjouterPiecesJointes([nomFichierCSV])
                 mail.Envoyer()
@@ -164,10 +164,10 @@ def main():
                                                config['SMTP']['SMTP_PORT'])
                     mail.Preparer(config['MAIL']['MAIL_HEBDOMADAIRE_DESTINATAIRE'].split(','),
                                   config['MAIL']['MAIL_HEBDOMADAIRE_OBJET']
-                                  .format(datetime.datetime.now()
+                                  .format(numsemaine = datetime.datetime.now()
                                   .isocalendar()[1]),
                                   config['MAIL']['MAIL_HEBDOMADAIRE_MESSAGE']
-                                  .format(datetime.datetime.now() \
+                                  .format(numsemaine = datetime.datetime.now() \
                                   .isocalendar()[1]))
                     mail.AjouterPiecesJointes([nomFichierCSVsemaine])
                     mail.Envoyer()

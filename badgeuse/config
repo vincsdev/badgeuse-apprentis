@@ -42,18 +42,18 @@ SMTP_PORT = <port>
 [MAIL]
 # Configuration du mail quotidien à envoyer.
 MAIL_QUOTIDIEN_DESTINATAIRE = <destinataires>
-MAIL_QUOTIDIEN_OBJET = Liste des passages du {0}
+MAIL_QUOTIDIEN_OBJET = Liste des passages du {date}
 MAIL_QUOTIDIEN_MESSAGE = Bonjour,<br /><br />
                          Veuillez recevoir la liste des passages
-                         effectués durant la journée du <b>{0}</b>.<br /><br />
+                         effectués durant la journée du <b>{date}</b>.<br /><br />
                          Cordialement<br /><br />
                          La badgeuse
 
 # Configuration du mail hebdomadaire à envoyer.
 MAIL_HEBDOMADAIRE_DESTINATAIRE = <destinataires>
-MAIL_HEBDOMADAIRE_OBJET = Liste des passages de la semaine {0}
+MAIL_HEBDOMADAIRE_OBJET = Liste des passages de la semaine {numsemaine}
 MAIL_HEBDOMADAIRE_MESSAGE = Bonjour,<br /><br />
                             Veuillez recevoir la liste des passages
-                            effectués durant la semaine <b>{0}</b>.<br /><br />
+                            effectués durant la semaine <b>{numsemaine}</b>.<br /><br />
                             Cordialement<br /><br />
                             La badgeuse
