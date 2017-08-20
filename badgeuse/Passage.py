@@ -3,12 +3,12 @@ import datetime
 
 class Passage:
     def __init__(self, idcarte):
-        self.date = datetime.datetime.now().date()
+        self._date = datetime.datetime.now().date()
         self._heure = datetime.datetime.now().time()
         self._idCarte = idcarte
 
     def ToCSV(self):
-        return [self.date.strftime('%d/%m/%Y'),
+        return [self._date.strftime('%d/%m/%Y'),
                 self._heure.strftime('%H:%M:%S'),
                 self._idCarte]
 

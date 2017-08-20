@@ -62,9 +62,9 @@ class Mail:
 
 if __name__ == '__main__':
     mail = Mail()
-    mail.ConfigurerServeurSMTP('vincent.saulnier.94@gmail.com', 'mimine94',
+    mail.ConfigurerServeurSMTP('<mail>', '<motpasse>',
                                'smtp.gmail.com', 587)
-    mail.Preparer(['vini.chou.vc@gmail.com'], 'Test', 'Message test')
+    mail.Preparer(['<destinataire>'], 'Test', 'Message test')
     mail.AjouterPiecesJointes(['''/home/vini/Documents/PFE_Session2/Développements
                                   /Badgeuse/donnees/2017_07_30.csv'''])
     mail.Envoyer()
