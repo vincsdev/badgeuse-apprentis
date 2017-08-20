@@ -7,7 +7,7 @@ LOG_LEVEL = 10
 
 [DIRECTORY]
 # Définition de l'emplacement de stockage des fichiers CSV générés.
-DATA_DIRECTORY = /tmp/badgeuse-apprentis/
+DATA_DIRECTORY = /var/lib/badgeuse-apprentis/
 
 # Définition de l'emplacement des fichiers de logs.
 LOG_DIRECTORY = /var/log/
