@@ -6,10 +6,14 @@ from badgeuse.Passage import *
 
 
 class Lecteur(CardObserver):
+    """
+        Lecteur de smart card
+    """
     def __init__(self, q):
         self._q = q
 
     def update(self, observable, actions):
+        
         (addedcards, removedcards) = actions
         for card in addedcards:
             hresult, hcontext = SCardEstablishContext(SCARD_SCOPE_USER)

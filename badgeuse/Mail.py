@@ -12,12 +12,18 @@ COMMASPACE = ', '
 
 class Mail:
     def ConfigurerServeurSMTP(self, utilisateur, motdepasse, url, port):
+        """
+            Récupère les informations pour la connexion au serveur SMTP.
+        """
         self._expediteur = utilisateur
         self._motdepasse = motdepasse
         self._serveur = url
         self._port = port
 
     def Preparer(self, destinataires, sujet, texte):
+        """
+            Prépare le mail à l'envoi.
+        """
         self._destinataires = destinataires
 
         # Création du message
@@ -30,6 +36,9 @@ class Mail:
         self._message.attach(MIMEText(texte, 'html'))  # ou 'plain'
 
     def AjouterPiecesJointes(self, listePJ):
+        """
+            Ajoute les pièces jointes au mail.
+        """
         retour = True
         # Ajout des pièces jointes
         for file in listePJ:
@@ -42,13 +51,16 @@ class Mail:
                                filename=os.path.basename(file))
                 self._message.attach(msg)
             except:
-                logging.error("Impossible d'ouvrir les pièces jointes.'. Erreur: ",
-                               sys.exc_info()[0])
+                logging.error("""Impossible d'ouvrir les pièces jointes.
+                              Erreur: """,
+                              sys.exc_info()[0])
                 retour = False
         return retour
 
     def Envoyer(self):
-        # Envoi de l'email'
+        """
+            Envoi l'email.
+        """
         try:
             with smtplib.SMTP(self._serveur, self._port) as s:
                 s.ehlo()
@@ -61,7 +73,8 @@ class Mail:
             logging.info("Email envoyé!")
             return True
         except:
-            logging.error("Impossible d'envoyer le mail'. Erreur: ", sys.exc_info()[0])
+            logging.error("Impossible d'envoyer le mail'. Erreur: ",
+                          sys.exc_info()[0])
             return False
 
 

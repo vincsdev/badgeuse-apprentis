@@ -8,6 +8,10 @@ class Passage:
         self._idCarte = idcarte
 
     def ToCSV(self):
+        """
+            Met en forme les données pour l'ajout
+            au fichier CSV.
+        """
         return [self._date.strftime('%d/%m/%Y'),
                 self._heure.strftime('%H:%M:%S'),
                 self._idCarte]
