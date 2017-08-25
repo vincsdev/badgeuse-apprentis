@@ -36,3 +36,9 @@ Log from service
 ```
 # journalctl -f -u badgeuse-apprentis.service
 ```
+
+### Testing
+To run unit tests
+```
+python3 setup.py test
+```
