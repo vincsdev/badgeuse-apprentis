@@ -1,4 +1,5 @@
 import datetime
+import logging
 from smartcard.scard import *
 from smartcard.CardMonitoring import CardMonitor, CardObserver
 from smartcard.util import toHexString
@@ -33,6 +34,7 @@ class Lecteur(CardObserver):
             res = ""
             for b in response:
                 res += format(b, "02x") + ":"
+            logging.info('Carte : ' + res[:-7])
             self._q.put(Passage(res[:-7]))
 
 
