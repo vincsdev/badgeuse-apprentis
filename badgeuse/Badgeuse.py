@@ -11,7 +11,7 @@ from multiprocessing import Process, Queue
 from badgeuse.Passage import *
 from badgeuse.Mail import *
 from badgeuse.LecteurCarte import *
-
+from badgeuse.Fichier import *
 
 CONFIG_FILE = '/etc/badgeuse-apprentis/config'
 
@@ -97,18 +97,17 @@ def main():
 
     _lecteurEstActif = False
 
+    _fichierQuotidien = None
+    _fichierHebdomadaire = None
+
     logging.info("Démarrage du service")
     # Boucle principale
     while True:
         # Attente de la lecture d'une carte'
         if q.qsize() > 0:
             # Ouverture du fichier CSV et écriture du passage
-            with open(nomFichierCSV, 'a') as fichiercsv:
-                csvwriter = csv.writer(fichiercsv,
-                                       delimiter=',',
-                                       quotechar='|',
-                                       quoting=csv.QUOTE_MINIMAL)
-                csvwriter.writerow(q.get(False).ToCSV())
+            logging.info("Ecriture passage")
+            _fichierQuotidien.EcrireLigne(q.get(False).ToCSV())
 
         # Vérification de l'horaire d'activation du lecteur
         if not _lecteurEstActif and \
@@ -118,19 +117,20 @@ def main():
             creer_processus_lecteur(q, f)
             _lecteurEstActif = True
 
-            # Définition du nom du fichier CSV
-            nomFichierCSV = _dossierDonnees
-            nomFichierCSV += datetime.datetime.now()
-            .strftime('%Y_%m_%d')
-            nomFichierCSV += '.csv'
+            # Définition du fichier CSV quotidien
+            nomFichierCSVquot = _dossierDonnees
+            nomFichierCSVquot += datetime.datetime.now().strftime('%Y_%m_%d')
+            nomFichierCSVquot += '.csv'
+            _fichierQuotidien = FichierCSV(nomFichierCSVquot)
 
         # Vérification s'il est l'heure de la collecte
         if datetime.datetime.now().time() >= _heureCollecte and \
            datetime.datetime.now().time() < ajoutSecs(_heureCollecte, 10):
 
             # Test si il y a eu des passages dans la journée
-            if os.path.exists(nomFichierCSV):
+            if _fichierQuotidien.Existe():
                 # Envoi du mail
+                logging.info("Envoi mail")
                 mail = Mail()
                 mail.ConfigurerServeurSMTP(config['SMTP']['SMTP_UTILISATEUR'],
                                            config['SMTP']['SMTP_MOTDEPASSE'],
@@ -145,12 +145,10 @@ def main():
                     config['MAIL']['MAIL_QUOTIDIEN_MESSAGE']
                     .format(date=datetime.datetime.now()
                             .strftime('%d/%m/%Y')))
-                mail.AjouterPiecesJointes([nomFichierCSV])
+                mail.AjouterPiecesJointes([nomFichierCSVquot])
                 mail.Envoyer()
-                logging.info("Mail envoyé")
             else:
-                logging.info("Pas de passage le " +
-                             datetime.datetime.today().date())
+                logging.info("Pas de passage")
 
             # Vérification si c'est la fin de semaine
             if datetime.datetime.today().weekday() == _finSemaine:
@@ -161,30 +159,28 @@ def main():
                 semaine = [aujourdhui + datetime.timedelta(days=i)
                            for i in range(0 - aujourdhui.weekday(),
                            5 - aujourdhui.weekday())]
-                fichierPassages = []
+                fichiersPassages = []
                 for jour in semaine:
                     fichier = _dossierDonnees + jour.strftime('%Y_%m_%d') + \
                               '.csv'
                     if os.path.exists(fichier):
-                        fichierPassages.append(fichier)
-
-                nomFichierCSVsemaine = _dossierDonnees + \
-                    'semaine_' + \
-                    datetime.datetime.now().strftime('%Y') + \
-                    '_' + str(datetime.datetime.now().isocalendar()[1]) + \
-                    '.csv'
+                        fichiersPassages.append(fichier)
 
                 # Si au moins un fichier, création du fichier de la semaine
-                if len(fichierPassages) > 0:
-                    with open(nomFichierCSVsemaine, 'w+') as fichiercsv:
-                        for fichier in fichierPassages:
-                            shutil.copyfileobj(open(fichier, 'r'), fichiercsv)
-                        fichiercsv.close()
+                if len(fichiersPassages) > 0:
+                    nomFichierCSVhebdo = _dossierDonnees
+                    nomFichierCSVhebdo += 'semaine_'
+                    nomFichierCSVhebdo += datetime.datetime.now().strftime('%Y')
+                    nomFichierCSVhebdo += '_' + str(datetime.datetime.now().isocalendar()[1])
+                    nomFichierCSVhebdo += '.csv'
+                    _fichierHebdomadaire = FichierCSV(nomFichierCSVhebdo)
+                    
+                    _fichierHebdomadaire.ConcatenerFichiers(fichiersPassages)
                 else:
                     logging.info("Pas de passage la semaine " +
                                  str(datetime.datetime.now().isocalendar()[1]))
 
-                if os.path.exists(nomFichierCSVsemaine):
+                if _fichierHebdomadaire != None and _fichierHebdomadaire.Existe():
                     # Envoi du mail
                     mail = Mail()
                     mail.ConfigurerServeurSMTP(
@@ -201,9 +197,8 @@ def main():
                         config['MAIL']['MAIL_HEBDOMADAIRE_MESSAGE']
                         .format(numsemaine=datetime.datetime.now()
                                 .isocalendar()[1]))
-                    mail.AjouterPiecesJointes([nomFichierCSVsemaine])
+                    mail.AjouterPiecesJointes([nomFichierCSVhebdo])
                     mail.Envoyer()
-                    logging.info("Mail envoyé")
 
                 # Arret du lecteur de badge
                 f.put('fin')
