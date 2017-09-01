@@ -49,7 +49,7 @@ def creer_processus_lecteur(q, f):
     p.start()
 
 
-def ajoutSecs(tm, secs):
+def ajout_secs(tm, secs):
     """
         Ajout des secondes à un objet datetime.
     """
@@ -64,16 +64,16 @@ def main():
     """
 
     # Lecture du fichier de configuration
-    config = configparser.ConfigParser()
-    config.read(CONFIG_FILE)
+    _config = configparser.ConfigParser()
+    _config.read(CONFIG_FILE)
 
     # Emplacement de stockage des fichiers CSV générés
-    _dossierDonnees = config['DIRECTORY']['DATA_DIRECTORY']
+    _dossierDonnees = _config['DIRECTORY']['DATA_DIRECTORY']
     if not os.path.exists(_dossierDonnees):
         os.makedirs(_dossierDonnees)
 
     # Emplacement de stockage des fichiers de logs
-    _dossierLogs = config['DIRECTORY']['LOG_DIRECTORY']
+    _dossierLogs = _config['DIRECTORY']['LOG_DIRECTORY']
     if not os.path.exists(_dossierLogs):
         os.makedirs(_dossierLogs)
 
@@ -81,7 +81,7 @@ def main():
     logging.basicConfig(filename=_dossierLogs + 'badgeuse-apprentis.log',
                         format='%(asctime)s - %(levelname)s - %(message)s',
                         datefmt='%d/%m/%Y %H:%M:%S',
-                        level=config.getint('LOG', 'LOG_LEVEL'))
+                        level=_config.getint('LOG', 'LOG_LEVEL'))
 
     # Initialisation des buffers de communication avec le lecteur
     q = Queue()
@@ -89,11 +89,11 @@ def main():
 
     # Configuration des horaires
     _heureDebut = datetime.datetime.strptime(
-                  config['FONCTIONNEMENT']['HEURE_DEBUT'], '%H:%M:%S').time()
+                  _config['FONCTIONNEMENT']['HEURE_DEBUT'], '%H:%M:%S').time()
     _heureCollecte = datetime.datetime.strptime(
-                  config['FONCTIONNEMENT']['HEURE_COLLECTE'],
+                  _config['FONCTIONNEMENT']['HEURE_COLLECTE'],
                   '%H:%M:%S').time()
-    _finSemaine = config.getint('FONCTIONNEMENT', 'FIN_SEMAINE')
+    _finSemaine = _config.getint('FONCTIONNEMENT', 'FIN_SEMAINE')
 
     _lecteurEstActif = False
 
@@ -132,17 +132,17 @@ def main():
                 # Envoi du mail
                 logging.info("Envoi mail")
                 mail = Mail()
-                mail.ConfigurerServeurSMTP(config['SMTP']['SMTP_UTILISATEUR'],
-                                           config['SMTP']['SMTP_MOTDEPASSE'],
-                                           config['SMTP']['SMTP_URL'],
-                                           config['SMTP']['SMTP_PORT'])
+                mail.ConfigurerServeurSMTP(_config['SMTP']['SMTP_UTILISATEUR'],
+                                           _config['SMTP']['SMTP_MOTDEPASSE'],
+                                           _config['SMTP']['SMTP_URL'],
+                                           _config['SMTP']['SMTP_PORT'])
                 mail.Preparer(
-                    config['MAIL']['MAIL_QUOTIDIEN_DESTINATAIRE']
+                    _config['MAIL']['MAIL_QUOTIDIEN_DESTINATAIRE']
                     .split(','),
-                    config['MAIL']['MAIL_QUOTIDIEN_OBJET']
+                    _config['MAIL']['MAIL_QUOTIDIEN_OBJET']
                     .format(date=datetime.datetime.now()
                             .strftime('%d/%m/%Y')),
-                    config['MAIL']['MAIL_QUOTIDIEN_MESSAGE']
+                    _config['MAIL']['MAIL_QUOTIDIEN_MESSAGE']
                     .format(date=datetime.datetime.now()
                             .strftime('%d/%m/%Y')))
                 mail.AjouterPiecesJointes([nomFichierCSVquot])
@@ -184,17 +184,17 @@ def main():
                     # Envoi du mail
                     mail = Mail()
                     mail.ConfigurerServeurSMTP(
-                        config['SMTP']['SMTP_UTILISATEUR'],
-                        config['SMTP']['SMTP_MOTDEPASSE'],
-                        config['SMTP']['SMTP_URL'],
-                        config['SMTP']['SMTP_PORT'])
+                        _config['SMTP']['SMTP_UTILISATEUR'],
+                        _config['SMTP']['SMTP_MOTDEPASSE'],
+                        _config['SMTP']['SMTP_URL'],
+                        _config['SMTP']['SMTP_PORT'])
                     mail.Preparer(
-                        config['MAIL']['MAIL_HEBDOMADAIRE_DESTINATAIRE']
+                        _config['MAIL']['MAIL_HEBDOMADAIRE_DESTINATAIRE']
                         .split(','),
-                        config['MAIL']['MAIL_HEBDOMADAIRE_OBJET']
+                        _config['MAIL']['MAIL_HEBDOMADAIRE_OBJET']
                         .format(numsemaine=datetime.datetime.now()
                                 .isocalendar()[1]),
-                        config['MAIL']['MAIL_HEBDOMADAIRE_MESSAGE']
+                        _config['MAIL']['MAIL_HEBDOMADAIRE_MESSAGE']
                         .format(numsemaine=datetime.datetime.now()
                                 .isocalendar()[1]))
                     mail.AjouterPiecesJointes([nomFichierCSVhebdo])
@@ -210,7 +210,7 @@ def main():
                     except:
                         logging.error("Lecteur toujours actif")
                 # Attente du vendredi à 20h au lundi à 6h (2 jours + 10h)
-                time.sleep(config.getfloat('FONCTIONNEMENT',
+                time.sleep(_config.getfloat('FONCTIONNEMENT',
                            'TEMPORISATION_ENTRE_SEMAINE') * 60 * 60)
 
             else:
@@ -224,7 +224,7 @@ def main():
                     except:
                         logging.error("Lecteur toujours actif")
                 # Attente du lendemain matin
-                time.sleep(config.getfloat('FONCTIONNEMENT',
+                time.sleep(_config.getfloat('FONCTIONNEMENT',
                            'TEMPORISATION_ENTRE_JOUR') * 60 * 60)
 
         else:
